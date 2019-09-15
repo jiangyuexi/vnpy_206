@@ -89,7 +89,7 @@ class RecorderEngine(BaseEngine):
         """"""
         if vt_symbol in self.bar_recordings:
             self.write_log(f"已在K线记录列表中：{vt_symbol}")
-            return
+            # return
 
         contract = self.main_engine.get_contract(vt_symbol)
         if not contract:
@@ -103,7 +103,7 @@ class RecorderEngine(BaseEngine):
         }
 
         self.subscribe(contract)
-        self.save_setting()
+        # self.save_setting()
         self.put_event()
 
         self.write_log(f"添加K线记录成功：{vt_symbol}")
@@ -112,7 +112,7 @@ class RecorderEngine(BaseEngine):
         """"""
         if vt_symbol in self.tick_recordings:
             self.write_log(f"已在Tick记录列表中：{vt_symbol}")
-            return
+            # return
 
         contract = self.main_engine.get_contract(vt_symbol)
         if not contract:
@@ -126,7 +126,7 @@ class RecorderEngine(BaseEngine):
         }
 
         self.subscribe(contract)
-        self.save_setting()
+        # self.save_setting()
         self.put_event()
 
         self.write_log(f"添加Tick记录成功：{vt_symbol}")
@@ -138,7 +138,7 @@ class RecorderEngine(BaseEngine):
             return
 
         self.bar_recordings.pop(vt_symbol)
-        self.save_setting()
+        # self.save_setting()
         self.put_event()
 
         self.write_log(f"移除K线记录成功：{vt_symbol}")
@@ -150,7 +150,7 @@ class RecorderEngine(BaseEngine):
             return
 
         self.tick_recordings.pop(vt_symbol)
-        self.save_setting()
+        # self.save_setting()
         self.put_event()
 
         self.write_log(f"移除Tick记录成功：{vt_symbol}")

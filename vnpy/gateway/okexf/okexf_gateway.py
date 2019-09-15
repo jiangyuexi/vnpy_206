@@ -762,6 +762,13 @@ class OkexfWebsocketApi(WebsocketClient):
         }
         self.send_packet(req)
 
+        # Subscribe to BTC/USDT trade for keep connection alive
+        req = {
+            "op": "subscribe",
+            "args": ["swap/ticker:TRX-USD-SWAP"]
+        }
+        self.send_packet(req)
+
     def on_login(self, data: dict):
         """"""
         success = data.get("success", False)

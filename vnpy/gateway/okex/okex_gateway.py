@@ -117,6 +117,7 @@ class OkexGateway(BaseGateway):
         else:
             proxy_port = 0
 
+
         self.rest_api.connect(key, secret, passphrase,
                               session_number, proxy_host, proxy_port)
         self.ws_api.connect(key, secret, passphrase, proxy_host, proxy_port)
@@ -701,7 +702,7 @@ class OkexWebsocketApi(WebsocketClient):
         # Subscribe to BTC/USDT trade for keep connection alive
         req = {
             "op": "subscribe",
-            "args": ["spot/trade:BTC-USDT"]
+            "args": ["spot/trade:TRX-USDT"]
         }
         self.send_packet(req)
 
@@ -727,8 +728,7 @@ class OkexWebsocketApi(WebsocketClient):
         tick.high = float(d["high_24h"])
         tick.low = float(d["low_24h"])
         tick.volume = float(d["base_volume_24h"])
-        tick.datetime = datetime.strptime(
-            d["timestamp"], "%Y-%m-%dT%H:%M:%S.%fZ")
+        tick.datetime = utc_to_local(d["timestamp"])
         self.gateway.on_tick(copy(tick))
 
     def on_depth(self, d):
@@ -750,8 +750,7 @@ class OkexWebsocketApi(WebsocketClient):
             tick.__setattr__("ask_price_%s" % (n + 1), float(price))
             tick.__setattr__("ask_volume_%s" % (n + 1), float(volume))
 
-        tick.datetime = datetime.strptime(
-            d["timestamp"], "%Y-%m-%dT%H:%M:%S.%fZ")
+        tick.datetime = utc_to_local(d["timestamp"])
         self.gateway.on_tick(copy(tick))
 
     def on_order(self, d):
@@ -765,7 +764,7 @@ class OkexWebsocketApi(WebsocketClient):
             price=float(d["price"]),
             volume=float(d["size"]),
             traded=float(d["filled_size"]),
-            time=d["timestamp"][11:19],
+            time=utc_to_local(d["timestamp"]).strftime("%H:%M:%S"),
             status=STATUS_OKEX2VT[d["status"]],
             gateway_name=self.gateway_name,
         )
@@ -813,3 +812,9 @@ def get_timestamp():
     now = datetime.utcnow()
     timestamp = now.isoformat("T", "milliseconds")
     return timestamp + "Z"
+
+def utc_to_local(timestamp):
+    time = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    utc_time = time + timedelta(hours=8)
+    return utc_time
+
