@@ -77,6 +77,9 @@ def main():
         # 连接火币平台
         connect = ConnectNoDialog(main_engine=main_engine, gateway_name=name)
         connect.connect()
+        sleep(2)
+
+    sleep(20)
 
     for tick in data_recorder_app.tick_recordings.keys():
         data_recorder_app.add_tick_recording(tick)
